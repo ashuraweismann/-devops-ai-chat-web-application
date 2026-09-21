@@ -1,5 +1,6 @@
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
+import { generateAIResponse } from "../services/aiService.js";
 
 // Create a new conversation
 export const createConversation = async (req, res) => {
@@ -88,6 +89,7 @@ export const getConversationMessages = async (req, res) => {
 };
 
 // Add a user message to a conversation
+// Save a user message and generate an AI response
 export const sendMessage = async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -112,26 +114,48 @@ export const sendMessage = async (req, res) => {
       });
     }
 
-    const message = await Message.create({
+    const userMessage = await Message.create({
       conversation: conversation._id,
       role: "user",
       content: content.trim(),
     });
 
-    // Update the conversation's last-modified timestamp
+    const conversationMessages = await Message.find({
+      conversation: conversation._id,
+    })
+      .sort({
+        createdAt: 1,
+      })
+      .limit(20);
+
+    const aiMessages = conversationMessages.map((message) => ({
+      role: message.role,
+      content: message.content,
+    }));
+
+    const assistantContent = await generateAIResponse(aiMessages);
+
+    const assistantMessage = await Message.create({
+      conversation: conversation._id,
+      role: "assistant",
+      content: assistantContent,
+    });
+
     conversation.updatedAt = new Date();
+
     await conversation.save();
 
     return res.status(201).json({
       success: true,
-      message,
+      userMessage,
+      assistantMessage,
     });
   } catch (error) {
     console.error("Send message error:", error.message);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to send message",
+      message: "Failed to generate AI response",
     });
   }
 };

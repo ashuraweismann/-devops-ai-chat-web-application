@@ -107,7 +107,8 @@ function Chat() {
 
       setMessages((previousMessages) => [
         ...previousMessages,
-        response.message,
+        response.userMessage,
+        response.assistantMessage,
       ]);
 
       setInput("");
@@ -124,7 +125,12 @@ function Chat() {
       );
     } catch (requestError) {
       console.error("Failed to send message:", requestError);
-      setError("Failed to send message");
+
+      const message =
+        requestError.response?.data?.message ||
+        "Failed to generate AI response";
+
+      setError(message);
     } finally {
       setSending(false);
     }
