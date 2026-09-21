@@ -35,7 +35,7 @@ function Login() {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Login failed. Please try again."
+        "Login failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -43,47 +43,64 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+  <div className="login-page">
+     <div className="login-card">
+       <div className="login-header">
+         <div className="login-icon">⚡</div> 
+         <h1>DevOps AI Chat</h1> 
+         
+         <p>Sign in to continue to your AI assistant</p>
+        </div> 
+        
+        <form onSubmit={handleSubmit} className="login-form"> 
+          
+          <div className="form-group">
+             <label htmlFor="email">Email</label>
+             
+              <input 
+              id="email" 
+              name="email"
+              type="email" 
+              placeholder="Enter your email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              required /> 
+            </div> 
+            
+            <div className="form-group"> 
+              <label htmlFor="password">Password</label> 
+              
+              <input id="password" 
+              name="password" 
+              type="password" 
+              placeholder="Enter your password" 
+              value={formData.password} 
+              onChange={handleChange} required /> 
+            </div> 
+            
+            {error && (<div className="login-error"> {error} </div>)} 
+            
+            <button 
+              type="submit" 
+              className="login-button" 
+              disabled={loading} > 
+              {loading ? "Logging in..." : "Login"} 
+            </button> 
+          </form> 
+          
+          <div className="login-footer"> 
+            <p> 
+              Don't have an account?{" "} 
+              <Link to="/register">Register</Link> 
+            </p> 
+          </div> 
+          
+        </div> 
+        
+      </div>
+    );
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {error && <p>{error}</p>}
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      <p>
-        Don't have an account?{" "}
-        <Link to="/register">Register</Link>
-      </p>
-    </div>
-  );
 }
 
 export default Login;
