@@ -22,9 +22,13 @@ function Dashboard() {
       <p>Welcome, {user?.name}!</p>
       <p>Email: {user?.email}</p>
 
-      <p>Your AI chat dashboard will be built in the next phase.</p>
+      <button onClick={() => navigate("/chat")}>
+        Open Chat
+      </button>
 
-      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 }
