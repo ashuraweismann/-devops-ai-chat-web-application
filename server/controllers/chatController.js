@@ -151,11 +151,20 @@ export const sendMessage = async (req, res) => {
       assistantMessage,
     });
   } catch (error) {
-    console.error("Send message error:", error.message);
+    console.error("Send message error:", {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      type: error.type,
+      response: error.response?.data,
+    });
 
     return res.status(500).json({
       success: false,
-      message: "Failed to generate AI response",
+      message:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Failed to generate AI response",
     });
   }
 };
