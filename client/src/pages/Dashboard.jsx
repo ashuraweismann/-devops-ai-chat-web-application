@@ -17,7 +17,7 @@ function Dashboard() {
 
   return (
     <div>
-      <h1>DevOps AI Chat</h1>
+      <h1>AI ChatBot</h1>
 
       <p>Welcome, {user?.name}!</p>
       <p>Email: {user?.email}</p>
