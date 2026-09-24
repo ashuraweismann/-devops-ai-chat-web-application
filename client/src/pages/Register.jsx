@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import backgroundImage from "../assets/13108079_5140011.jpg";
 import botImage from "../assets/AI_bot.png";
+import logoImage from "../assets/Logo.jpg";
 
 function Register() {
   const navigate = useNavigate();
@@ -73,7 +74,10 @@ function Register() {
         {" "}
         <div className="login-header">
           {" "}
-          <div className="login-icon">⚡</div> <h1>AI ChatBot</h1>{" "}
+          <div className="login-icon">
+            <img src={logoImage} alt="AI chatbot logo" />
+          </div>
+          <h1>AI ChatBot</h1>
           <p>Create your account to get started</p>{" "}
         </div>{" "}
         <form onSubmit={handleSubmit} className="login-form">
@@ -121,7 +125,6 @@ function Register() {
               required
             />{" "}
           </div>{" "}
-
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
 
@@ -137,7 +140,6 @@ function Register() {
               required
             />
           </div>
-          
           {error && <div className="login-error"> {error} </div>}{" "}
           <button type="submit" className="login-button" disabled={loading}>
             {" "}

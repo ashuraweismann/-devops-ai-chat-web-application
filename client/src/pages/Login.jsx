@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import backgroundImage from "../assets/13108079_5140011.jpg";
 import botImage from "../assets/AI_bot.png";
-
+import logoImage from "../assets/Logo.jpg";
 
 function Login() {
   const navigate = useNavigate();
@@ -60,7 +60,9 @@ function Login() {
       <div className="login-card">
 
         <div className="login-header">
-          <div className="login-icon">⚡</div>
+          <div className="login-icon">
+            <img src={logoImage} alt = "AI chatbot logo" />
+          </div>
 
           <h1>AI ChatBot</h1>
 
