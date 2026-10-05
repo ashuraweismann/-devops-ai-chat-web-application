@@ -28,7 +28,7 @@ services:
     container_name: devops-client
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5173:80"
     depends_on:
       - server
 
