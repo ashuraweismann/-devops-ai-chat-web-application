@@ -10,7 +10,6 @@ pipeline {
             steps {
                 echo 'Preparing environment files...'
                 sh '''
-                    # Ensure server/.env exists so docker compose doesn't fail on missing env_file
                     touch server/.env
                 '''
             }
@@ -25,8 +24,17 @@ pipeline {
 
         stage('Deploy / Run Stack') {
             steps {
-                echo 'Starting application containers...'
-                sh 'docker compose up -d'
+                echo 'Stopping old containers and deploying fresh stack...'
+                sh '''
+                    # Stop previous stack if active
+                    docker compose down --remove-orphans || true
+
+                    # Ensure no conflicting containers exist
+                    docker rm -f devops-mongodb devops-server devops-client 2>/dev/null || true
+
+                    # Start the new stack in detached mode
+                    docker compose up -d
+                '''
             }
         }
     }
