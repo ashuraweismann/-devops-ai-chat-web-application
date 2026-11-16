@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        node {
+            label 'rootless-docker'
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build & Test Services') {
+            steps {
+                echo 'Testing Client and Server...'
+                sh '''
+                    cd server && npm install && cd ..
+                    cd client && npm install && npm run build && cd ..
+                '''
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                echo 'Building Docker Compose stack...'
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Deploy / Run Stack') {
+            steps {
+                echo 'Deploying containers...'
+                sh 'docker compose up -d'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
