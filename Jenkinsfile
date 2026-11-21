@@ -8,19 +8,27 @@ pipeline {
     stages {
         stage('Prepare Environment') {
             steps {
-                echo 'Creating server/.env with configuration and secrets...'
-                withCredentials([
-                    string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET_VAL'),
-                    string(credentialsId: 'GROQ_API_KEY', variable: 'GROQ_API_KEY_VAL')
-                ]) {
-                    sh '''
-                        cat << EOF > server/.env
+                echo 'Fetching secrets from Vault and creating server/.env...'
+                script {
+                    def secrets = [
+                        [path: 'secret/devops-ai-chat/dev', engineVersion: 2, secretValues: [
+                            [envVar: 'JWT_SECRET_VAL', vaultKey: 'JWT_SECRET'],
+                            [envVar: 'GROQ_API_KEY_VAL', vaultKey: 'GROQ_API_KEY']
+                        ]]
+                    ]
+                    def configuration = [
+                        vaultUrl: 'http://host.docker.internal:8200',
+                        vaultCredentialId: 'vault-devops-ai-chat-approle'
+                    ]
+                    withVault([configuration: configuration, vaultSecrets: secrets]) {
+                        sh '''
+                            cat << EOF > server/.env
 PORT=5000
 MONGODB_URI=mongodb://mongodb:27017/devops_ai_chat
-JWT_SECRET=${JWT_SECRET_VAL}
+JWT_SECRET=${JWT_SECRET}
 JWT_EXPIRES_IN=1d
 NODE_ENV=development
-GROQ_API_KEY=${GROQ_API_KEY_VAL}
+GROQ_API_KEY=${GROQ_API_KEY}
 GROQ_MODEL=openai/gpt-oss-20b
 EOF
                     '''
@@ -49,6 +57,12 @@ EOF
                     docker compose up -d
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'rm -f server/.env'
         }
     }
 }
