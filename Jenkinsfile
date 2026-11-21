@@ -25,13 +25,14 @@ pipeline {
                             cat << EOF > server/.env
 PORT=5000
 MONGODB_URI=mongodb://mongodb:27017/devops_ai_chat
-JWT_SECRET=${JWT_SECRET}
+JWT_SECRET=${JWT_SECRET_VAL}
 JWT_EXPIRES_IN=1d
 NODE_ENV=development
-GROQ_API_KEY=${GROQ_API_KEY}
+GROQ_API_KEY=${GROQ_API_KEY_VAL}
 GROQ_MODEL=openai/gpt-oss-20b
 EOF
-                    '''
+                        '''
+                    }
                 }
             }
         }
